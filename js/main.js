@@ -21,3 +21,6 @@ function getRandom(min, max, power) {
 function getRandomInt(min, max) {
   return getRandom(min, max, 0);
 }
+
+getRandom(0, 1.5, 3);
+getRandomInt(1, 10);
