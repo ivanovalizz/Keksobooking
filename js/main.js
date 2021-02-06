@@ -43,7 +43,8 @@ function getLocation() {
 
 // Функция, генерирующая случайное время въезда и выезда
 function getCheckinCheckoutTime() {
-  return offerCheckinCheckoutArray[getRandomInt(0, (offerCheckinCheckoutArray.length - 1))];
+  const index = getRandomInt(0, (offerCheckinCheckoutArray.length - 1));
+  return offerCheckinCheckoutArray[index];
 }
 
 // Функция, генерирующая массив случайных неповторяющихмя фичей для объявления
@@ -51,11 +52,7 @@ function getFeatures() {
   const randomFeatures = [];
   const maxFeaturesCount = getRandomInt(0, (offerFeaturesArray.length - 1));
 
-  while (true) {
-    if (randomFeatures.length === maxFeaturesCount) {
-      break;
-    }
-
+  while (randomFeatures.length < maxFeaturesCount) {
     const index = getRandomInt(0, (offerFeaturesArray.length - 1));
     const item = offerFeaturesArray[index];
 
@@ -72,22 +69,24 @@ function getPhotos() {
   const maxPhotosCount = getRandomInt(1, 5);
 
   for (let i = 0; i < maxPhotosCount; i++) {
-    randomPhotos.push('http://o0.github.io/assets/images/tokyo/hotel' + getRandomInt(1, maxCountOfPhotos) + '.jpg');
+    const index = getRandomInt(1, maxCountOfPhotos);
+    randomPhotos.push(`http://o0.github.io/assets/images/tokyo/hotel${index}.jpg`);
   }
 
   return randomPhotos;
 }
 
 // Функция, генерирующая объект с объявлением
-function getObjectAd() {
-  const randomLocation = getLocation();
+function getAd() {
+  const location = getLocation();
+  const userAvatarIndex = getRandomInt(1, maxCountOfAvatar);
   return {
     author: {
-      avatar: 'img/avatars/user0' + getRandomInt(1, maxCountOfAvatar) + '.png',
+      avatar: `img/avatars/user0${userAvatarIndex}.png`,
     },
     offer: {
       title: 'The title of ad',
-      address: randomLocation.x + ', ' + randomLocation.y,
+      address: `${location.x}, ${location.y}`,
       price: getRandomInt(0, 100000),
       type: getRandomInt(0, (offerTypeArray.length - 1)),
       rooms: getRandomInt(0, 100),
@@ -98,22 +97,19 @@ function getObjectAd() {
       description: 'The description of ad and blah-blah-blah',
       photos: getPhotos(),
     },
-    location: {
-      x: randomLocation.x,
-      y: randomLocation.y,
-    },
+    location,
   }
 }
 
 // Функция создания массива из 10 сгенерированных объектов случайных объявлений
-function getAdsArray(count) {
-  const randomAdsArray = []; // Пустой массив, в который сложим сгенерированные объекты
+function fetchAds(count) {
+  const randomAds = []; // Пустой массив, в который сложим сгенерированные объекты
 
-  for (let i = 0; i < randomCountOfAds; i++) {
-    randomAdsArray.push(getObjectAd())
+  for (let i = 0; i < count; i++) {
+    randomAds.push(getAd())
   }
 
-  return randomAdsArray;
+  return randomAds;
 }
 
-console.log(getAdsArray(randomCountOfAds));
+console.log(fetchAds(randomCountOfAds));
