@@ -65,7 +65,7 @@ function getAd() {
       title: 'The title of ad',
       address: `${location.x}, ${location.y}`,
       price: getRandomInt(0, 100000),
-      type: getRandomInt(0, (offerTypeArray.length - 1)),
+      type: offerTypeArray[getRandomInt(0, (offerTypeArray.length - 1))],
       rooms: getRandomInt(0, 100),
       guests: getRandomInt(0, 1000),
       checkin: getCheckinCheckoutTime(),
