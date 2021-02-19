@@ -1,1 +1,3 @@
-import './card-render.js';
+import {renderCard} from './card.js';
+
+renderCard();

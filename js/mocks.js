@@ -1,37 +1,35 @@
 import {getRandom, getRandomInt} from './utils.js';
 
-const offerTypeArray = ['palace', 'flat', 'house', 'bungalow'];
-const offerCheckinCheckoutArray = ['12:00', '13:00', '14:00'];
-const offerFeaturesArray = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-const minLocationX = 35.65000;
-const maxLocationX = 35.70000;
-const minLocationY = 139.70000;
-const maxLocationY = 139.80000;
-const maxCountOfAvatar = 8;
-const maxCountOfPhotos = 3;
+const OFFER_TYPES = ['palace', 'flat', 'house', 'bungalow'];
+const OFFER_AVAILABLE_TIME = ['12:00', '13:00', '14:00'];
+const OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+const MIN_LOCATION_X = 35.65000;
+const MAX_LOCATION_X = 35.70000;
+const MIN_LOCATION_Y = 139.70000;
+const MAX_LOCATION_Y = 139.80000;
+const MAX_COUNT_OF_AVATARS = 8;
+const MAX_COUNT_OF_PHOTOS = 3;
 
 // Функция, генерирующая объект локации
-function getLocation() {
-  return {
-    x: getRandom(minLocationX, maxLocationX, 5),
-    y: getRandom(minLocationY, maxLocationY, 5),
-  }
-}
+const getLocation = () => ({
+  x: getRandom(MIN_LOCATION_X, MAX_LOCATION_X, 5),
+  y: getRandom(MIN_LOCATION_Y, MAX_LOCATION_Y, 5),
+})
 
 // Функция, генерирующая случайное время въезда и выезда
-function getCheckinCheckoutTime() {
-  const index = getRandomInt(0, (offerCheckinCheckoutArray.length - 1));
-  return offerCheckinCheckoutArray[index];
+const getCheckinCheckoutTime = function () {
+  const index = getRandomInt(0, (OFFER_AVAILABLE_TIME.length - 1));
+  return OFFER_AVAILABLE_TIME[index];
 }
 
 // Функция, генерирующая массив случайных неповторяющихмя фичей для объявления
-function getFeatures() {
+const getFeatures = function () {
   const randomFeatures = [];
-  const maxFeaturesCount = getRandomInt(0, (offerFeaturesArray.length - 1));
+  const maxFeaturesCount = getRandomInt(0, (OFFER_FEATURES.length - 1));
 
   while (randomFeatures.length < maxFeaturesCount) {
-    const index = getRandomInt(0, (offerFeaturesArray.length - 1));
-    const item = offerFeaturesArray[index];
+    const index = getRandomInt(0, (OFFER_FEATURES.length - 1));
+    const item = OFFER_FEATURES[index];
 
     if (randomFeatures.indexOf(item) === -1) {
       randomFeatures.push(item);
@@ -41,12 +39,12 @@ function getFeatures() {
 }
 
 // Функция, генерирующая массив случайных неповторяющихся фото для объявления
-function getPhotos() {
+const getPhotos = function () {
   const randomPhotos = [];
-  const maxPhotosCount = getRandomInt(1, 5);
+  const maxPhotosCount = getRandomInt(1, MAX_COUNT_OF_PHOTOS);
 
   for (let i = 0; i < maxPhotosCount; i++) {
-    const index = getRandomInt(1, maxCountOfPhotos);
+    const index = maxPhotosCount !== 1 ? getRandomInt(1, maxPhotosCount) : 1;
     randomPhotos.push(`http://o0.github.io/assets/images/tokyo/hotel${index}.jpg`);
   }
 
@@ -54,9 +52,9 @@ function getPhotos() {
 }
 
 // Функция, генерирующая объект с объявлением
-function getAd() {
+const getAd = function () {
   const location = getLocation();
-  const userAvatarIndex = getRandomInt(1, maxCountOfAvatar);
+  const userAvatarIndex = getRandomInt(1, MAX_COUNT_OF_AVATARS);
   return {
     author: {
       avatar: `img/avatars/user0${userAvatarIndex}.png`,
@@ -65,7 +63,7 @@ function getAd() {
       title: 'The title of ad',
       address: `${location.x}, ${location.y}`,
       price: getRandomInt(0, 100000),
-      type: offerTypeArray[getRandomInt(0, (offerTypeArray.length - 1))],
+      type: OFFER_TYPES[getRandomInt(0, (OFFER_TYPES.length - 1))],
       rooms: getRandomInt(0, 100),
       guests: getRandomInt(0, 1000),
       checkin: getCheckinCheckoutTime(),
