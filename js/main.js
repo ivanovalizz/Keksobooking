@@ -1,5 +1,3 @@
-import {fetchAds} from './mocks.js';
+import {renderCard} from './card.js';
 
-const randomCountOfAds = 10;
-
-console.log(fetchAds(randomCountOfAds));
+renderCard();
