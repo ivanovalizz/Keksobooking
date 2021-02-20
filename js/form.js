@@ -1,42 +1,30 @@
-const form = document.querySelector('.ad-form');
-const formTypeInput = form.querySelector('#type')
-const formPriceInput = form.querySelector('#price');
+const formElement = document.querySelector('.ad-form');
+const typeInputElement = formElement.querySelector('#type')
+const priceInputElement = formElement.querySelector('#price');
 
-formTypeInput.addEventListener('change', function() {
-  if (formTypeInput.value === 'palace') {
-    formPriceInput.min = '10000';
-    formPriceInput.placeholder = '10000';
-  } else if (formTypeInput.value === 'house') {
-    formPriceInput.min = '5000';
-    formPriceInput.placeholder = '5000';
-  } else if (formTypeInput.value === 'flat') {
-    formPriceInput.min = '1000';
-    formPriceInput.placeholder = '1000';
+typeInputElement.addEventListener('change', function() {
+  if (typeInputElement.value === 'palace') {
+    priceInputElement.min = '10000';
+    priceInputElement.placeholder = '10000';
+  } else if (typeInputElement.value === 'house') {
+    priceInputElement.min = '5000';
+    priceInputElement.placeholder = '5000';
+  } else if (typeInputElement.value === 'flat') {
+    priceInputElement.min = '1000';
+    priceInputElement.placeholder = '1000';
   } else {
-    formPriceInput.min = '0';
-    formPriceInput.placeholder = '0';
+    priceInputElement.min = '0';
+    priceInputElement.placeholder = '0';
   }
 });
 
-const formCheckinInput = form.querySelector('#timein');
-const formCheckoutInput = form.querySelector('#timeout');
+const checkinInputElement = formElement.querySelector('#timein');
+const checkoutInputElement = formElement.querySelector('#timeout');
 
-formCheckinInput.addEventListener('change', function () {
-  if (formCheckinInput.value === '14:00') {
-    formCheckoutInput.value = '14:00';
-  } else if (formCheckinInput.value === '13:00') {
-    formCheckoutInput.value = '13:00';
-  } else if (formCheckinInput.value === '12:00') {
-    formCheckoutInput.value = '12:00';
-  }
-});
+const onCheckinCheckoutChange = function () {
+  checkinInputElement.value = this.value
+  checkoutInputElement.value = this.value
+}
 
-formCheckoutInput.addEventListener('change', function () {
-  if (formCheckoutInput.value === '14:00') {
-    formCheckinInput.value = '14:00';
-  } else if (formCheckoutInput.value === '13:00') {
-    formCheckinInput.value = '13:00';
-  } else if (formCheckoutInput.value === '12:00') {
-    formCheckinInput.value = '12:00';
-  }
-});
+checkinInputElement.addEventListener('change', onCheckinCheckoutChange);
+checkoutInputElement.addEventListener('change', onCheckinCheckoutChange);
