@@ -1,6 +1,3 @@
-import {fetchAds} from './mocks.js';
-
-const COUNT_OF_ADS = 10;
 const OFFER_TYPE_DICTIONARY = {
   palace: 'Дворец',
   flat: 'Квартира',
@@ -30,39 +27,26 @@ const createPhotosFragment = function (cardElement, photos) {
   return imagesFragment;
 }
 
-// Функция, создающая DOM-элементы на основе сгенерированных объектов
-const createCardsFragment = function () {
-  const ads = fetchAds(COUNT_OF_ADS);
+// // Функция, создающая DOM-элементы на основе сгенерированных объектов
+export const getCardElement = function (point) {
   const template = document.querySelector('#card').content.querySelector('article');
-  const fragment = document.createDocumentFragment();
+  const cardElement = template.cloneNode(true);
 
-  ads.forEach(ad => {
-    const cardElement = template.cloneNode(true);
+  setElementParam(cardElement.querySelector('.popup__title'), point.offer.title);
+  setElementParam(cardElement.querySelector('.popup__text--address'), point.offer.address);
+  setElementParam(cardElement.querySelector('.popup__text--price'),`${point.offer.price} ₽/ночь`);
+  setElementParam(cardElement.querySelector('.popup__type'), OFFER_TYPE_DICTIONARY[point.offer.type]);
+  setElementParam(cardElement.querySelector('.popup__text--capacity'), `${point.offer.rooms} комнаты для ${point.offer.guests} гостей`);
+  setElementParam(cardElement.querySelector('.popup__text--time'), `Заезд после  ${point.offer.checkin}, выезд до ${point.offer.checkout}`);
+  setElementParam(cardElement.querySelector('.popup__features'), point.offer.features.join(', '));
+  setElementParam(cardElement.querySelector('.popup__description'), point.offer.description);
+  setElementParam(cardElement.querySelector('.popup__avatar'), point.author.avatar, 'src');
 
-    setElementParam(cardElement.querySelector('.popup__title'), ad.offer.title);
-    setElementParam(cardElement.querySelector('.popup__text--address'), ad.offer.address);
-    setElementParam(cardElement.querySelector('.popup__text--price'),`${ad.offer.price} ₽/ночь`);
-    setElementParam(cardElement.querySelector('.popup__type'), OFFER_TYPE_DICTIONARY[ad.offer.type]);
-    setElementParam(cardElement.querySelector('.popup__text--capacity'), `${ad.offer.rooms} комнаты для ${ad.offer.guests} гостей`);
-    setElementParam(cardElement.querySelector('.popup__text--time'), `Заезд после  ${ad.offer.checkin}, выезд до ${ad.offer.checkout}`);
-    setElementParam(cardElement.querySelector('.popup__features'), ad.offer.features.join(', '));
-    setElementParam(cardElement.querySelector('.popup__description'), ad.offer.description);
-    setElementParam(cardElement.querySelector('.popup__avatar'), ad.author.avatar, 'src');
+  const photosElement = cardElement.querySelector('.popup__photos');
+  const imagesFragment = createPhotosFragment(cardElement, point.offer.photos);
 
-    const photosElement = cardElement.querySelector('.popup__photos');
-    const imagesFragment = createPhotosFragment(cardElement, ad.offer.photos);
+  photosElement.innerHTML = '';
+  photosElement.appendChild(imagesFragment);
 
-    photosElement.innerHTML = '';
-    photosElement.appendChild(imagesFragment);
-
-    fragment.appendChild(cardElement);
-  });
-  return fragment;
-}
-
-const cardsFragment = createCardsFragment();
-
-// Функция, отрисовывающая первую карточку с объявлением
-export const renderCard = function () {
-  document.querySelector('#map-canvas').appendChild(cardsFragment.firstElementChild);
+  return cardElement;
 }
