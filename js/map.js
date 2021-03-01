@@ -1,3 +1,4 @@
+/* global L:readonly */
 import {fetchAds} from './mocks.js';
 import {getCardElement} from './card.js';
 
@@ -21,6 +22,7 @@ const togglePageState = function (isNotActivated) {
   mainFormFieldsetElements.forEach(fieldset => {
     fieldset.disabled = !isNotActivated
   });
+
   for (let i = 0; i < mapFiltersFormChildrenElements.length; i++) {
     mapFiltersFormChildrenElements[i].disabled = !isNotActivated;
   }
@@ -29,8 +31,9 @@ const togglePageState = function (isNotActivated) {
 const deactivatePage = () => togglePageState (false);
 const activatePage = () => togglePageState (true);
 
-deactivatePage(); // Добавление интерактивной карты
+deactivatePage();
 
+// Добавление интерактивной карты
 const map = L.map('map-canvas')
   .on('load', activatePage) // Если карта успешно загрузилась, страница переходит в активное состояние)
   .setView({lat: 35.6895000, lng: 139.6917100}, 12);
@@ -86,7 +89,6 @@ fetchAds(COUNT_OF_ADS).forEach((point) => {
 
   similarPinMarker.addTo(map).bindPopup(
     getCardElement(point),
-    {
-      keepInView: true}, // Поможет уместить всю карточку на карте, сохраняя в зоне видимости и передвигая карту
+    {keepInView: true}, // Поможет уместить всю карточку на карте, сохраняя в зоне видимости и передвигая карту
   );
 });
