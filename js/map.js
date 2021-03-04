@@ -1,5 +1,4 @@
 /* global L:readonly */
-import {fetchAds} from './mocks.js';
 import {getCardElement} from './card.js';
 
 const COUNT_OF_ADS = 10;
@@ -77,18 +76,17 @@ mainPinMarker.on('moveend', (evt) => {
   document.querySelector('#address').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 });
 
-// Выводит на карту метки похожих объявлений и
-fetchAds(COUNT_OF_ADS).forEach((point) => {
-  const similarPinMarker = L.marker({
-    lat: point.location.x,
-    lng: point.location.y,
-  },
-  {
-    icon: similarPinIcon,
-  });
+// Выводит на карту метки похожих объявлений
+export const renderPoints = function (ads) {
+  ads.forEach((point) => {
+    const similarPinMarker = L.marker(point.location,
+      {
+        icon: similarPinIcon,
+      });
 
-  similarPinMarker.addTo(map).bindPopup(
-    getCardElement(point),
-    {keepInView: true}, // Поможет уместить всю карточку на карте, сохраняя в зоне видимости и передвигая карту
-  );
-});
+    similarPinMarker.addTo(map).bindPopup(
+      getCardElement(point),
+      {keepInView: true}, // Поможет уместить всю карточку на карте, сохраняя в зоне видимости и передвигая карту
+    );
+  });
+}

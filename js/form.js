@@ -1,3 +1,6 @@
+import {createMessageModal, showMessageModal} from './modal.js';
+import {createNewAd} from './fetchers.js';
+
 const formElement = document.querySelector('.ad-form');
 const typeInputElement = formElement.querySelector('#type')
 const priceInputElement = formElement.querySelector('#price');
@@ -71,3 +74,27 @@ const onRoomNumberAndCapacitySelectChange = function () {
 
 roomNumberElement.addEventListener('change', onRoomNumberAndCapacitySelectChange)
 capacityElement.addEventListener('change', onRoomNumberAndCapacitySelectChange)
+
+const showSuccessNotification = function () {
+  const modalSuccess = createMessageModal('success');
+  showMessageModal(modalSuccess);
+
+  formElement.reset();
+}
+
+const showErrorNotification = function () {
+  const modalError = createMessageModal('error');
+  showMessageModal(modalError);
+}
+
+export const setUserFormSubmit = () => {
+  formElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    createNewAd(
+      () => showSuccessNotification(),
+      () => showErrorNotification(),
+      new FormData(evt.target),
+    );
+  })
+}
