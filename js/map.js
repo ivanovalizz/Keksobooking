@@ -1,8 +1,6 @@
 /* global L:readonly */
 import {getCardElement} from './card.js';
 
-const COUNT_OF_ADS = 10;
-
 const mainFormElement = document.querySelector('.ad-form');
 const mainFormFieldsetElements = mainFormElement.querySelectorAll('fieldset');
 const mapFiltersFormElement = document.querySelector('.map__filters');
