@@ -1,6 +1,8 @@
-import {createMessageModal, showMessageModal} from './modal.js';
+import {showMessageModal} from './modal.js';
 import {createNewAd} from './fetchers.js';
+import {mainPinMarker} from './map.js';
 
+// Меняет значение плейсхолдера и устанавливает минимальное значение для поля с ценой
 const formElement = document.querySelector('.ad-form');
 const typeInputElement = formElement.querySelector('#type')
 const priceInputElement = formElement.querySelector('#price');
@@ -29,6 +31,7 @@ typeInputElement.addEventListener('change', function() {
   priceInputElement.placeholder = minPrice[typeInputElement.value].placeholder;
 });
 
+// Устанавливает сответствие между временем заселения и выезда
 const checkinInputElement = formElement.querySelector('#timein');
 const checkoutInputElement = formElement.querySelector('#timeout');
 
@@ -40,6 +43,7 @@ const onCheckinCheckoutChange = function () {
 checkinInputElement.addEventListener('change', onCheckinCheckoutChange);
 checkoutInputElement.addEventListener('change', onCheckinCheckoutChange);
 
+// Валидирует соответствие количества комнат количеству гостей
 const roomNumberElement = formElement.querySelector('#room_number');
 const capacityElement = formElement.querySelector('#capacity');
 
@@ -75,18 +79,18 @@ const onRoomNumberAndCapacitySelectChange = function () {
 roomNumberElement.addEventListener('change', onRoomNumberAndCapacitySelectChange)
 capacityElement.addEventListener('change', onRoomNumberAndCapacitySelectChange)
 
+// Отрисовывает сообщение об успешной отправке формы
 const showSuccessNotification = function () {
-  const modalSuccess = createMessageModal('success');
-  showMessageModal(modalSuccess);
-
+  showMessageModal('success');
   formElement.reset();
 }
 
+// Отрисовывает сообщение о неудачной отправке формы
 const showErrorNotification = function () {
-  const modalError = createMessageModal('error');
-  showMessageModal(modalError);
+  showMessageModal('error');
 }
 
+// Отправляет форму с новым объявлением на сервер
 export const setUserFormSubmit = () => {
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -98,3 +102,16 @@ export const setUserFormSubmit = () => {
     );
   })
 }
+
+// Меняет значения полей при сбросе формы
+const BASED_LOCATION_X = 35.6895000;
+const BASED_LOCATION_Y = 139.6917100;
+
+formElement.addEventListener('reset', function() {
+  document.querySelector('#price').placeholder = '1000';
+  document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(5)}, ${BASED_LOCATION_Y.toFixed(5)}`;
+  mainPinMarker.setLatLng({
+    lat: BASED_LOCATION_X,
+    lng: BASED_LOCATION_Y,
+  });
+})

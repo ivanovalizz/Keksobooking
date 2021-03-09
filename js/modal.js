@@ -1,26 +1,19 @@
-/*const createSuccessMessageModal = function () {
-  const successMessageTemplate = document.querySelector('#success').content.querySelector('div');
-  const successMessageModal = successMessageTemplate.cloneNode(true);
-  return successMessageModal;
+import {isEscEvent} from './utils.js';
+
+// Функция, скрывающая модальное окно о результатах отправки формы
+const hideMessageModal = function (evt) {
+  if (isEscEvent(evt)) {
+    evt.preventDefault();
+    document.querySelector('main').removeChild(document.querySelector('.notification-modal'));
+  }
+  document.removeEventListener('keydown', hideMessageModal);
 }
 
-const createErrorMessageModal = function () {
-  const errorMessageTemplate = document.querySelector('#error').content.querySelector('div');
-  const errorMessageModal = errorMessageTemplate.cloneNode(true);
-  return errorMessageModal;
-}*/
-
-// Функция, создающая модальное окно с сообщением об отправке формы
-export const createMessageModal = function (elementId) {
+// Функция, отображающая модальное окно о результатах отправки формы
+export const showMessageModal = function (elementId) {
   const template = document.querySelector(`#${elementId}`).content.querySelector('div');
   const messageModal = template.cloneNode(true);
-  document.querySelector('body').appendChild(messageModal);
-  messageModal.classList.add('hidden');
-  return messageModal;
+  messageModal.classList.add('notification-modal');
+  document.querySelector('main').appendChild(messageModal);
+  document.addEventListener('keydown', hideMessageModal);
 }
-
-// Функция, отображающая нужное модальное окно
-export const showMessageModal = function (modal) {
-  modal.classList.remove('hidden');
-}
-
