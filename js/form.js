@@ -79,10 +79,26 @@ const onRoomNumberAndCapacitySelectChange = function () {
 roomNumberElement.addEventListener('change', onRoomNumberAndCapacitySelectChange)
 capacityElement.addEventListener('change', onRoomNumberAndCapacitySelectChange)
 
+// Меняет значения полей при сбросе формы
+const BASED_LOCATION_X = 35.6895000;
+const BASED_LOCATION_Y = 139.6917100;
+
+const resetForm = () => {
+  formElement.reset();
+  document.querySelector('#price').placeholder = '1000';
+  document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(5)}, ${BASED_LOCATION_Y.toFixed(5)}`;
+  mainPinMarker.setLatLng({
+    lat: BASED_LOCATION_X,
+    lng: BASED_LOCATION_Y,
+  });
+}
+
+document.querySelector('.ad-form__reset').addEventListener('click', resetForm);
+
 // Отрисовывает сообщение об успешной отправке формы
 const showSuccessNotification = function () {
   showMessageModal('success');
-  formElement.reset();
+  resetForm();
 }
 
 // Отрисовывает сообщение о неудачной отправке формы
@@ -102,16 +118,3 @@ export const setUserFormSubmit = () => {
     );
   })
 }
-
-// Меняет значения полей при сбросе формы
-const BASED_LOCATION_X = 35.6895000;
-const BASED_LOCATION_Y = 139.6917100;
-
-formElement.addEventListener('reset', function() {
-  document.querySelector('#price').placeholder = '1000';
-  document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(5)}, ${BASED_LOCATION_Y.toFixed(5)}`;
-  mainPinMarker.setLatLng({
-    lat: BASED_LOCATION_X,
-    lng: BASED_LOCATION_Y,
-  });
-})

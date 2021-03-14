@@ -6,7 +6,7 @@ export const getRandom = (min, max, power) =>
     null
 
 
-// Функция генерации случайного целого числа из заданного диапозона бла
+// Функция генерации случайного целого числа из заданного диапозона
 export const getRandomInt = (min, max) => getRandom(min, max, 0)
 
 export const isEscEvent = (evt) => {
