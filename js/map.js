@@ -1,18 +1,18 @@
 /* global L:readonly */
-import {fetchAds} from './mocks.js';
 import {getCardElement} from './card.js';
-
-const COUNT_OF_ADS = 10;
 
 const mainFormElement = document.querySelector('.ad-form');
 const mainFormFieldsetElements = mainFormElement.querySelectorAll('fieldset');
 const mapFiltersFormElement = document.querySelector('.map__filters');
 const mapFiltersFormChildrenElements = mapFiltersFormElement.children;
+const BASED_LOCATION_X = 35.6895000;
+const BASED_LOCATION_Y = 139.6917100;
 
 const togglePageState = function (isNotActivated) {
   if (isNotActivated) {
     mainFormElement.classList.remove('ad-form--disabled');
     mapFiltersFormElement.classList.remove('map__filters--disabled');
+    document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(5)}, ${BASED_LOCATION_Y.toFixed(5)}`;
   } else {
     mainFormElement.classList.add('ad-form--disabled');
     mapFiltersFormElement.classList.add('map__filters--disabled');
@@ -58,10 +58,10 @@ const similarPinIcon = L.icon({
   iconAnchor: [16, 32],
 });
 
-const mainPinMarker = L.marker(
+export const mainPinMarker = L.marker(
   {
-    lat: 35.6895000,
-    lng: 139.6917100,
+    lat: BASED_LOCATION_X,
+    lng: BASED_LOCATION_Y,
   },
   {
     draggable: true,
@@ -77,18 +77,17 @@ mainPinMarker.on('moveend', (evt) => {
   document.querySelector('#address').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 });
 
-// Выводит на карту метки похожих объявлений и
-fetchAds(COUNT_OF_ADS).forEach((point) => {
-  const similarPinMarker = L.marker({
-    lat: point.location.x,
-    lng: point.location.y,
-  },
-  {
-    icon: similarPinIcon,
-  });
+// Выводит на карту метки похожих объявлений
+export const renderPoints = function (ads) {
+  ads.forEach((point) => {
+    const similarPinMarker = L.marker(point.location,
+      {
+        icon: similarPinIcon,
+      });
 
-  similarPinMarker.addTo(map).bindPopup(
-    getCardElement(point),
-    {keepInView: true}, // Поможет уместить всю карточку на карте, сохраняя в зоне видимости и передвигая карту
-  );
-});
+    similarPinMarker.addTo(map).bindPopup(
+      getCardElement(point),
+      {keepInView: true}, // Поможет уместить всю карточку на карте, сохраняя в зоне видимости и передвигая карту
+    );
+  });
+}

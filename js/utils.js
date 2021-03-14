@@ -8,3 +8,7 @@ export const getRandom = (min, max, power) =>
 
 // Функция генерации случайного целого числа из заданного диапозона
 export const getRandomInt = (min, max) => getRandom(min, max, 0)
+
+export const isEscEvent = (evt) => {
+  return evt.key === 'Escape' || evt.key === 'Esc';
+};
