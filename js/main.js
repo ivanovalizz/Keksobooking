@@ -2,6 +2,7 @@
 import {setUserFormSubmit, onMapFiltersChange} from './form.js';
 import {fetchSimilarAds} from './api.js';
 import {renderSimilarPoints} from './map.js';
+import './photo.js';
 
 const RERENDER_DELAY = 500;
 

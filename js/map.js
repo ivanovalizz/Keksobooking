@@ -18,7 +18,6 @@ const togglePageState = function (isNotActivated) {
   } else {
     mainFormElement.classList.add('ad-form--disabled');
     mapFiltersFormElement.classList.add('map__filters--disabled');
-
   }
 
   mainFormFieldsetElements.forEach(fieldset => {
