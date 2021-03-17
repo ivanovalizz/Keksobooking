@@ -4,7 +4,10 @@ export const fetchSimilarAds = (onSuccess, onFail) => {
   fetch('https://22.javascript.pages.academy/keksobooking/data')
     .then((response) => response.json())
     .then((data) => onSuccess(data))
-    .catch(() => onFail(errorMessage));
+    .catch((error) => {
+      console.log(error)
+      onFail(errorMessage)
+    });
 };
 
 // Отправляет новое объявление с данными из формы на сервер

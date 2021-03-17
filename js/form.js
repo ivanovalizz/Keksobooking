@@ -124,6 +124,10 @@ export const onMapFiltersChange = (cb) => {
   document.querySelector('#housing-price').addEventListener('change', cb)
   document.querySelector('#housing-rooms').addEventListener('change', cb)
   document.querySelector('#housing-guests').addEventListener('change', cb)
+  const features = document.querySelectorAll('input[name="features"]');
+  for (let i = 0; i < features.length; i++) {
+    features[i].addEventListener('change', cb)
+  }
 }
 
 
