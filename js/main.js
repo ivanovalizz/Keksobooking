@@ -1,11 +1,14 @@
-import {setUserFormSubmit} from './form.js';
-import {fetchSimilarAds} from './fetchers.js';
-import {renderPoints} from './map.js';
+import {setUserFormSubmit, onMapFiltersChange} from './form.js';
+import {fetchSimilarAds} from './api.js';
+import {renderSimilarPoints} from './map.js';
 
-const SIMILAR_ADS_COUNT = 10;
+// const SIMILAR_ADS_COUNT = 10;
 
 fetchSimilarAds(
-  (data) => renderPoints(data.slice(0, SIMILAR_ADS_COUNT)),
+  (data) => {
+    renderSimilarPoints(data)
+    onMapFiltersChange(() => renderSimilarPoints(data))
+  },
   (errorMessage) => alert(errorMessage),
 )
 

@@ -1,5 +1,5 @@
 import {showMessageModal} from './modal.js';
-import {createNewAd} from './fetchers.js';
+import {createNewAd} from './api.js';
 import {mainPinMarker} from './map.js';
 
 // Меняет значение плейсхолдера и устанавливает минимальное значение для поля с ценой
@@ -118,3 +118,12 @@ export const setUserFormSubmit = () => {
     );
   })
 }
+
+export const onMapFiltersChange = (cb) => {
+  document.querySelector('#housing-type').addEventListener('change', cb)
+  document.querySelector('#housing-price').addEventListener('change', cb)
+  document.querySelector('#housing-rooms').addEventListener('change', cb)
+  document.querySelector('#housing-guests').addEventListener('change', cb)
+}
+
+

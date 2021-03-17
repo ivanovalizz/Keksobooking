@@ -24,7 +24,7 @@ export const createNewAd = (onSuccess, onFail, body) => {
         onFail(errorMessage);
       }
     })
-    .catch((error) => {
+    .catch(() => {
       onFail(errorMessage);
     });
 };
