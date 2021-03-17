@@ -1,13 +1,16 @@
+/* global _:readonly */
 import {setUserFormSubmit, onMapFiltersChange} from './form.js';
 import {fetchSimilarAds} from './api.js';
 import {renderSimilarPoints} from './map.js';
 
-// const SIMILAR_ADS_COUNT = 10;
+const RERENDER_DELAY = 500;
 
 fetchSimilarAds(
   (data) => {
     renderSimilarPoints(data)
-    onMapFiltersChange(() => renderSimilarPoints(data))
+    onMapFiltersChange(_.debounce(
+      () => renderSimilarPoints(data), RERENDER_DELAY,
+    ))
   },
   (errorMessage) => alert(errorMessage),
 )

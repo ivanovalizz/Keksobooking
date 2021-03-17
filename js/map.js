@@ -7,6 +7,8 @@ const mapFiltersFormElement = document.querySelector('.map__filters');
 const mapFiltersFormChildrenElements = mapFiltersFormElement.children;
 const BASED_LOCATION_X = 35.6895000;
 const BASED_LOCATION_Y = 139.6917100;
+const MAP_ZOOM = 12;
+const COUNT_OF_SIMILAR_ADS = 10;
 
 const togglePageState = function (isNotActivated) {
   if (isNotActivated) {
@@ -36,7 +38,7 @@ deactivatePage();
 // Добавление интерактивной карты
 const map = L.map('map-canvas')
   .on('load', activatePage) // Если карта успешно загрузилась, страница переходит в активное состояние)
-  .setView({lat: 35.6895000, lng: 139.6917100}, 12);
+  .setView({lat: BASED_LOCATION_X, lng: BASED_LOCATION_Y}, MAP_ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -80,11 +82,11 @@ mainPinMarker.on('moveend', (evt) => {
 const filterSimilarAds = function (list) {
   return list.filter(ad => {
     const result = [];
-    const type = document.querySelector('#housing-type').value;
+    const type = mapFiltersFormElement.querySelector('#housing-type').value;
     if (type !== 'any') {
       result.push(ad.offer.type === type)
     }
-    const price = document.querySelector('#housing-price').value;
+    const price = mapFiltersFormElement.querySelector('#housing-price').value;
     if (price !== 'any') {
       if (price === 'low') {
         result.push(ad.offer.price < 10000)
@@ -96,16 +98,22 @@ const filterSimilarAds = function (list) {
         result.push(ad.offer.price > 50000)
       }
     }
-    const rooms = document.querySelector('#housing-rooms').value;
+    const rooms = mapFiltersFormElement.querySelector('#housing-rooms').value;
     if (rooms !== 'any') {
       result.push(ad.offer.rooms === Number(rooms))
     }
-    const guests = document.querySelector('#housing-guests').value;
+    const guests = mapFiltersFormElement.querySelector('#housing-guests').value;
     if (guests !== 'any') {
       result.push(ad.offer.guests === Number(guests))
     }
+    const features = mapFiltersFormElement.querySelectorAll('input[name="features"]');
+    for (let i = 0; i < features.length; i++) {
+      if (features[i].checked) {
+        result.push(ad.offer.features.indexOf(features[i].value) !== -1)
+      }
+    }
     return result.every(el => el === true);
-  }).slice(0, 10);
+  }).slice(0, COUNT_OF_SIMILAR_ADS);
 }
 
 // Выводит на карту метки похожих объявлений
