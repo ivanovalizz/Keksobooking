@@ -5,6 +5,7 @@ import {filterSimilarAds} from './similar-ads.js';
 const BASED_LOCATION_X = 35.6895000;
 const BASED_LOCATION_Y = 139.6917100;
 const MAP_ZOOM = 12;
+const FRACTION_DIGIT = 5;
 
 const mainFormElement = document.querySelector('.ad-form');
 const mainFormFieldsetElements = mainFormElement.querySelectorAll('fieldset');
@@ -15,7 +16,7 @@ const togglePageState = (isNotActivated) => {
   if (isNotActivated) {
     mainFormElement.classList.remove('ad-form--disabled');
     mapFiltersFormElement.classList.remove('map__filters--disabled');
-    document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(5)}, ${BASED_LOCATION_Y.toFixed(5)}`;
+    document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(FRACTION_DIGIT)}, ${BASED_LOCATION_Y.toFixed(FRACTION_DIGIT)}`;
   } else {
     mainFormElement.classList.add('ad-form--disabled');
     mapFiltersFormElement.classList.add('map__filters--disabled');
@@ -76,7 +77,7 @@ mainPinMarker.addTo(map);
 // Отслеживает перемещения главной метки и выводит текущие координаты в форму поиска
 mainPinMarker.on('moveend', (evt) => {
   const {lat, lng} = evt.target.getLatLng();
-  document.querySelector('#address').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  document.querySelector('#address').value = `${lat.toFixed(FRACTION_DIGIT)}, ${lng.toFixed(FRACTION_DIGIT)}`;
 });
 
 // Выводит на карту метки похожих объявлений

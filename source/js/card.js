@@ -1,4 +1,4 @@
-const OFFER_TYPE_DICTIONARY = {
+const OFFER_TYPES_DICTIONARY = {
   palace: 'Дворец',
   flat: 'Квартира',
   house: 'Дом',
@@ -35,7 +35,7 @@ export const getCardElement = (point) => {
   setElementParam(cardElement.querySelector('.popup__title'), point.offer.title);
   setElementParam(cardElement.querySelector('.popup__text--address'), point.offer.address);
   setElementParam(cardElement.querySelector('.popup__text--price'),`${point.offer.price} ₽/ночь`);
-  setElementParam(cardElement.querySelector('.popup__type'), OFFER_TYPE_DICTIONARY[point.offer.type]);
+  setElementParam(cardElement.querySelector('.popup__type'), OFFER_TYPES_DICTIONARY[point.offer.type]);
   setElementParam(cardElement.querySelector('.popup__text--capacity'), `${point.offer.rooms} комнаты для ${point.offer.guests} гостей`);
   setElementParam(cardElement.querySelector('.popup__text--time'), `Заезд после  ${point.offer.checkin}, выезд до ${point.offer.checkout}`);
   setElementParam(cardElement.querySelector('.popup__features'), point.offer.features.join(', '));

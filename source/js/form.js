@@ -5,13 +5,12 @@ import {mainPinMarker} from './map.js';
 const BASED_LOCATION_X = 35.6895000;
 const BASED_LOCATION_Y = 139.6917100;
 
-// Меняет значение плейсхолдера и устанавливает минимальное значение для поля с ценой
 const formElement = document.querySelector('.ad-form');
 const typeInputElement = formElement.querySelector('#type')
 const priceInputElement = formElement.querySelector('#price');
 
 typeInputElement.addEventListener('change', () => {
-  const minPrice = {
+  const priceInputOptions = {
     palace: {
       min: '10000',
       placeholder: '10000',
@@ -30,11 +29,10 @@ typeInputElement.addEventListener('change', () => {
     },
   };
 
-  priceInputElement.min = minPrice[typeInputElement.value].min;
-  priceInputElement.placeholder = minPrice[typeInputElement.value].placeholder;
+  priceInputElement.min = priceInputOptions[typeInputElement.value].min;
+  priceInputElement.placeholder = priceInputOptions[typeInputElement.value].placeholder;
 });
 
-// Устанавливает сответствие между временем заселения и выезда
 const checkinInputElement = formElement.querySelector('#timein');
 const checkoutInputElement = formElement.querySelector('#timeout');
 
@@ -46,7 +44,6 @@ const onCheckinCheckoutChange = () => {
 checkinInputElement.addEventListener('change', onCheckinCheckoutChange);
 checkoutInputElement.addEventListener('change', onCheckinCheckoutChange);
 
-// Валидирует соответствие количества комнат количеству гостей
 const roomNumberElement = formElement.querySelector('#room_number');
 const capacityElement = formElement.querySelector('#capacity');
 
