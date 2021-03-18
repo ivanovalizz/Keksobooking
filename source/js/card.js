@@ -1,11 +1,11 @@
-const OFFER_TYPE_DICTIONARY = {
+const OFFER_TYPES_DICTIONARY = {
   palace: 'Дворец',
   flat: 'Квартира',
   house: 'Дом',
   bungalow: 'Бунгало',
 };
 
-const setElementParam = function (element, value, param = 'textContent') {
+const setElementParam = (element, value, param = 'textContent') => {
   if (!value) {
     element.style.display = 'none';
   } else {
@@ -14,7 +14,7 @@ const setElementParam = function (element, value, param = 'textContent') {
 }
 
 // Создание DOM-элементов фотографий для объявления
-const createPhotosFragment = function (cardElement, photos) {
+const createPhotosFragment = (cardElement, photos) => {
   const imageTemplate = cardElement.querySelector('.popup__photos').querySelector('img');
   const imagesFragment = document.createDocumentFragment();
 
@@ -28,14 +28,14 @@ const createPhotosFragment = function (cardElement, photos) {
 }
 
 // // Функция, создающая DOM-элементы на основе сгенерированных объектов
-export const getCardElement = function (point) {
+export const getCardElement = (point) => {
   const template = document.querySelector('#card').content.querySelector('article');
   const cardElement = template.cloneNode(true);
 
   setElementParam(cardElement.querySelector('.popup__title'), point.offer.title);
   setElementParam(cardElement.querySelector('.popup__text--address'), point.offer.address);
   setElementParam(cardElement.querySelector('.popup__text--price'),`${point.offer.price} ₽/ночь`);
-  setElementParam(cardElement.querySelector('.popup__type'), OFFER_TYPE_DICTIONARY[point.offer.type]);
+  setElementParam(cardElement.querySelector('.popup__type'), OFFER_TYPES_DICTIONARY[point.offer.type]);
   setElementParam(cardElement.querySelector('.popup__text--capacity'), `${point.offer.rooms} комнаты для ${point.offer.guests} гостей`);
   setElementParam(cardElement.querySelector('.popup__text--time'), `Заезд после  ${point.offer.checkin}, выезд до ${point.offer.checkout}`);
   setElementParam(cardElement.querySelector('.popup__features'), point.offer.features.join(', '));

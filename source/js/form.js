@@ -2,13 +2,15 @@ import {showMessageModal} from './modal.js';
 import {createNewAd} from './api.js';
 import {mainPinMarker} from './map.js';
 
-// Меняет значение плейсхолдера и устанавливает минимальное значение для поля с ценой
+const BASED_LOCATION_X = 35.6895000;
+const BASED_LOCATION_Y = 139.6917100;
+
 const formElement = document.querySelector('.ad-form');
 const typeInputElement = formElement.querySelector('#type')
 const priceInputElement = formElement.querySelector('#price');
 
-typeInputElement.addEventListener('change', function() {
-  const minPrice = {
+typeInputElement.addEventListener('change', () => {
+  const priceInputOptions = {
     palace: {
       min: '10000',
       placeholder: '10000',
@@ -27,15 +29,14 @@ typeInputElement.addEventListener('change', function() {
     },
   };
 
-  priceInputElement.min = minPrice[typeInputElement.value].min;
-  priceInputElement.placeholder = minPrice[typeInputElement.value].placeholder;
+  priceInputElement.min = priceInputOptions[typeInputElement.value].min;
+  priceInputElement.placeholder = priceInputOptions[typeInputElement.value].placeholder;
 });
 
-// Устанавливает сответствие между временем заселения и выезда
 const checkinInputElement = formElement.querySelector('#timein');
 const checkoutInputElement = formElement.querySelector('#timeout');
 
-const onCheckinCheckoutChange = function () {
+const onCheckinCheckoutChange = () => {
   checkinInputElement.value = this.value
   checkoutInputElement.value = this.value
 }
@@ -43,11 +44,10 @@ const onCheckinCheckoutChange = function () {
 checkinInputElement.addEventListener('change', onCheckinCheckoutChange);
 checkoutInputElement.addEventListener('change', onCheckinCheckoutChange);
 
-// Валидирует соответствие количества комнат количеству гостей
 const roomNumberElement = formElement.querySelector('#room_number');
 const capacityElement = formElement.querySelector('#capacity');
 
-const onRoomNumberAndCapacitySelectChange = function () {
+const onRoomNumberAndCapacitySelectChange = () => {
   capacityElement.setCustomValidity('');
 
   switch (roomNumberElement.value) {
@@ -80,9 +80,6 @@ roomNumberElement.addEventListener('change', onRoomNumberAndCapacitySelectChange
 capacityElement.addEventListener('change', onRoomNumberAndCapacitySelectChange)
 
 // Меняет значения полей при сбросе формы
-const BASED_LOCATION_X = 35.6895000;
-const BASED_LOCATION_Y = 139.6917100;
-
 const resetForm = () => {
   formElement.reset();
   document.querySelector('#price').placeholder = '1000';
@@ -96,13 +93,13 @@ const resetForm = () => {
 document.querySelector('.ad-form__reset').addEventListener('click', resetForm);
 
 // Отрисовывает сообщение об успешной отправке формы
-const showSuccessNotification = function () {
+const showSuccessNotification = () => {
   showMessageModal('success');
   resetForm();
 }
 
 // Отрисовывает сообщение о неудачной отправке формы
-const showErrorNotification = function () {
+const showErrorNotification = () => {
   showMessageModal('error');
 }
 
@@ -117,17 +114,6 @@ export const setUserFormSubmit = () => {
       new FormData(evt.target),
     );
   })
-}
-
-export const onMapFiltersChange = (cb) => {
-  document.querySelector('#housing-type').addEventListener('change', cb)
-  document.querySelector('#housing-price').addEventListener('change', cb)
-  document.querySelector('#housing-rooms').addEventListener('change', cb)
-  document.querySelector('#housing-guests').addEventListener('change', cb)
-  const features = document.querySelectorAll('input[name="features"]');
-  for (let i = 0; i < features.length; i++) {
-    features[i].addEventListener('change', cb)
-  }
 }
 
 

@@ -1,20 +1,22 @@
 /* global L:readonly */
 import {getCardElement} from './card.js';
+import {filterSimilarAds} from './similar-ads.js';
+
+const BASED_LOCATION_X = 35.6895000;
+const BASED_LOCATION_Y = 139.6917100;
+const MAP_ZOOM = 12;
+const FRACTION_DIGIT = 5;
 
 const mainFormElement = document.querySelector('.ad-form');
 const mainFormFieldsetElements = mainFormElement.querySelectorAll('fieldset');
 const mapFiltersFormElement = document.querySelector('.map__filters');
 const mapFiltersFormChildrenElements = mapFiltersFormElement.children;
-const BASED_LOCATION_X = 35.6895000;
-const BASED_LOCATION_Y = 139.6917100;
-const MAP_ZOOM = 12;
-const COUNT_OF_SIMILAR_ADS = 10;
 
-const togglePageState = function (isNotActivated) {
+const togglePageState = (isNotActivated) => {
   if (isNotActivated) {
     mainFormElement.classList.remove('ad-form--disabled');
     mapFiltersFormElement.classList.remove('map__filters--disabled');
-    document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(5)}, ${BASED_LOCATION_Y.toFixed(5)}`;
+    document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(FRACTION_DIGIT)}, ${BASED_LOCATION_Y.toFixed(FRACTION_DIGIT)}`;
   } else {
     mainFormElement.classList.add('ad-form--disabled');
     mapFiltersFormElement.classList.add('map__filters--disabled');
@@ -75,50 +77,13 @@ mainPinMarker.addTo(map);
 // Отслеживает перемещения главной метки и выводит текущие координаты в форму поиска
 mainPinMarker.on('moveend', (evt) => {
   const {lat, lng} = evt.target.getLatLng();
-  document.querySelector('#address').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  document.querySelector('#address').value = `${lat.toFixed(FRACTION_DIGIT)}, ${lng.toFixed(FRACTION_DIGIT)}`;
 });
 
-const filterSimilarAds = function (list) {
-  return list.filter(ad => {
-    const result = [];
-    const type = mapFiltersFormElement.querySelector('#housing-type').value;
-    if (type !== 'any') {
-      result.push(ad.offer.type === type)
-    }
-    const price = mapFiltersFormElement.querySelector('#housing-price').value;
-    if (price !== 'any') {
-      if (price === 'low') {
-        result.push(ad.offer.price < 10000)
-      }
-      if (price === 'middle') {
-        result.push( ad.offer.price > 10000 && ad.offer.price < 50000)
-      }
-      if (price === 'high') {
-        result.push(ad.offer.price > 50000)
-      }
-    }
-    const rooms = mapFiltersFormElement.querySelector('#housing-rooms').value;
-    if (rooms !== 'any') {
-      result.push(ad.offer.rooms === Number(rooms))
-    }
-    const guests = mapFiltersFormElement.querySelector('#housing-guests').value;
-    if (guests !== 'any') {
-      result.push(ad.offer.guests === Number(guests))
-    }
-    const features = mapFiltersFormElement.querySelectorAll('input[name="features"]');
-    for (let i = 0; i < features.length; i++) {
-      if (features[i].checked) {
-        result.push(ad.offer.features.indexOf(features[i].value) !== -1)
-      }
-    }
-    return result.every(el => el === true);
-  }).slice(0, COUNT_OF_SIMILAR_ADS);
-}
-
 // Выводит на карту метки похожих объявлений
-export const renderSimilarPoints = function (ads) {
+export const renderSimilarPoints = (ads) => {
   const filteredAds = filterSimilarAds(ads)
-  map.eachLayer(function(layer) {
+  map.eachLayer((layer) => {
     if (layer instanceof L.Marker && layer !== mainPinMarker) {
       map.removeLayer(layer)
     }
