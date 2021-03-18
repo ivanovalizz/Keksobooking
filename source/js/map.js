@@ -2,17 +2,15 @@
 import {activateForms, deactivateForms} from './form.js'
 import {getCardElement} from './card.js'
 import {filterSimilarAds} from './ads-filter.js'
+import {getAddressString} from './utils.js';
 
-export const DEFAULT_MAIN_MARKER_LOCATION_X = 35.6895000
-export const DEFAULT_MAIN_MARKER_LOCATION_Y = 139.6917100
-export const FRACTION_DIGIT = 5
+export const DEFAULT_MAIN_MARKER_LOCATION = {
+  lat: 35.6895000,
+  lng: 139.6917100,
+}
 const MAP_ZOOM = 12
 const MARKER_ICON_SIZE = [32, 32]
 const MARKER_ICON_ANCHOR = [16, 32]
-const DEFAULT_MAIN_MARKER_LOCATION = {
-  lat: DEFAULT_MAIN_MARKER_LOCATION_X,
-  lng: DEFAULT_MAIN_MARKER_LOCATION_Y,
-}
 
 deactivateForms()
 const map = L.map('map-canvas')
@@ -52,9 +50,10 @@ export const renderSimilarPoints = ads => {
   })
 }
 
-const onMainPinMarkerMoveEnd = (evt) => {
+const addressInputElement = document.querySelector('#address')
+const onMainPinMarkerMove = (evt) => {
   const {lat, lng} = evt.target.getLatLng()
-  document.querySelector('#address').value = `${lat.toFixed(FRACTION_DIGIT)}, ${lng.toFixed(FRACTION_DIGIT)}`
+  addressInputElement.value = getAddressString(lat, lng)
 }
 
 export const initMap = () => {
@@ -64,5 +63,5 @@ export const initMap = () => {
   ).addTo(map)
 
   mainPinMarker.addTo(map)
-  mainPinMarker.on('moveend', onMainPinMarkerMoveEnd)
+  mainPinMarker.on('move', onMainPinMarkerMove)
 }

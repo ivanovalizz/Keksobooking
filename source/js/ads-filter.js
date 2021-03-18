@@ -1,4 +1,16 @@
 const COUNT_OF_SIMILAR_ADS = 10
+const HOUSING_PRICE = {
+  low: {
+    max: 10000,
+  },
+  middle: {
+    min: 10000,
+    max: 50000,
+  },
+  high: {
+    min: 50000,
+  },
+}
 
 const mapFiltersFormElement = document.querySelector('.map__filters')
 const selectHousingTypeElement = mapFiltersFormElement.querySelector('#housing-type')
@@ -7,51 +19,60 @@ const selectHousingRoomsElement = mapFiltersFormElement.querySelector('#housing-
 const selectHousingGuestsElement = mapFiltersFormElement.querySelector('#housing-guests')
 const featuresElements = mapFiltersFormElement.querySelectorAll('input[name="features"]')
 
-export const filterSimilarAds = ads => ads.filter(ad => {
-  const results = []
-
+const checkType = ad => {
   const type = selectHousingTypeElement.value
-  if (type !== 'any') {
-    results.push(ad.offer.type === type)
-  }
+  return type === 'any' || ad.offer.type === type
+}
 
+const checkPrice = ad => {
   const price = selectHousingPriceElement.value
-  if (price !== 'any') {
-    if (price === 'low') {
-      results.push(ad.offer.price < 10000)
-    }
-    if (price === 'middle') {
-      results.push( ad.offer.price > 10000 && ad.offer.price < 50000)
-    }
-    if (price === 'high') {
-      results.push(ad.offer.price > 50000)
-    }
-  }
+  return price === 'any' ||
+    (HOUSING_PRICE[price].max === undefined || HOUSING_PRICE[price].max !== undefined && ad.offer.price <= HOUSING_PRICE[price].max) &&
+    (HOUSING_PRICE[price].min === undefined || HOUSING_PRICE[price].min !== undefined && ad.offer.price >= HOUSING_PRICE[price].min)
+}
 
+const checkRooms = ad => {
   const rooms = selectHousingRoomsElement.value
-  if (rooms !== 'any') {
-    results.push(ad.offer.rooms === Number(rooms))
-  }
+  return rooms === 'any' || ad.offer.rooms === Number(rooms)
+}
 
+const checkGuests = ad => {
   const guests = selectHousingGuestsElement.value
-  if (guests !== 'any') {
-    results.push(ad.offer.guests === Number(guests))
-  }
+  return guests === 'any' || ad.offer.guests === Number(guests)
+}
 
-  for (let i = 0; i < featuresElements.length; i++) {
-    if (featuresElements[i].checked) {
-      results.push(ad.offer.features.indexOf(featuresElements[i].value) !== -1)
+const checkFeatures = ad => Array.from(featuresElements).every(feature => !feature.checked || ad.offer.features.indexOf(feature.value) !== -1)
+
+const checkSimilarForFilters = ad => {
+  const type = checkType(ad)
+  const price = checkPrice(ad)
+  const rooms = checkRooms(ad)
+  const guests = checkGuests(ad)
+  const features = checkFeatures(ad)
+
+  return type && price && rooms && guests && features
+}
+
+export const filterSimilarAds = ads => {
+  const newArr = []
+  for (let i = 0; i < ads.length; i++) {
+    if (newArr.length === COUNT_OF_SIMILAR_ADS) {
+      break
+    }
+    if (checkSimilarForFilters(ads[i])) {
+      newArr.push(ads[i])
     }
   }
-  return results.every(el => el === true)
-}).slice(0, COUNT_OF_SIMILAR_ADS)
+  return newArr
+}
 
 export const initAdsFilter = cb => {
+  mapFiltersFormElement.addEventListener('reset', cb)
   selectHousingTypeElement.addEventListener('change', cb)
   selectHousingPriceElement.addEventListener('change', cb)
   selectHousingRoomsElement.addEventListener('change', cb)
   selectHousingGuestsElement.addEventListener('change', cb)
-  for (let i = 0; i < featuresElements.length; i++) {
-    featuresElements[i].addEventListener('change', cb)
-  }
+  featuresElements.forEach(feature => {
+    feature.addEventListener('change', cb)
+  })
 }
