@@ -578,6 +578,7 @@ fieldset {
   height: 70px;
 
   background-color: #e4e4de;
+  background-size: contain;
   border-radius: 5px;
 }
 

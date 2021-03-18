@@ -1,99 +1,68 @@
 /* global L:readonly */
-import {getCardElement} from './card.js';
-import {filterSimilarAds} from './similar-ads.js';
+import {activateForms, deactivateForms} from './form.js'
+import {getCardElement} from './card.js'
+import {filterSimilarAds} from './ads-filter.js'
 
-const BASED_LOCATION_X = 35.6895000;
-const BASED_LOCATION_Y = 139.6917100;
-const MAP_ZOOM = 12;
-const FRACTION_DIGIT = 5;
-
-const mainFormElement = document.querySelector('.ad-form');
-const mainFormFieldsetElements = mainFormElement.querySelectorAll('fieldset');
-const mapFiltersFormElement = document.querySelector('.map__filters');
-const mapFiltersFormChildrenElements = mapFiltersFormElement.children;
-
-const togglePageState = (isNotActivated) => {
-  if (isNotActivated) {
-    mainFormElement.classList.remove('ad-form--disabled');
-    mapFiltersFormElement.classList.remove('map__filters--disabled');
-    document.querySelector('#address').value = `${BASED_LOCATION_X.toFixed(FRACTION_DIGIT)}, ${BASED_LOCATION_Y.toFixed(FRACTION_DIGIT)}`;
-  } else {
-    mainFormElement.classList.add('ad-form--disabled');
-    mapFiltersFormElement.classList.add('map__filters--disabled');
-  }
-
-  mainFormFieldsetElements.forEach(fieldset => {
-    fieldset.disabled = !isNotActivated
-  });
-
-  for (let i = 0; i < mapFiltersFormChildrenElements.length; i++) {
-    mapFiltersFormChildrenElements[i].disabled = !isNotActivated;
-  }
+export const DEFAULT_MAIN_MARKER_LOCATION_X = 35.6895000
+export const DEFAULT_MAIN_MARKER_LOCATION_Y = 139.6917100
+export const FRACTION_DIGIT = 5
+const MAP_ZOOM = 12
+const MARKER_ICON_SIZE = [32, 32]
+const MARKER_ICON_ANCHOR = [16, 32]
+const DEFAULT_MAIN_MARKER_LOCATION = {
+  lat: DEFAULT_MAIN_MARKER_LOCATION_X,
+  lng: DEFAULT_MAIN_MARKER_LOCATION_Y,
 }
 
-const deactivatePage = () => togglePageState (false);
-const activatePage = () => togglePageState (true);
-
-deactivatePage();
-
-// Добавление интерактивной карты
+deactivateForms()
 const map = L.map('map-canvas')
-  .on('load', activatePage) // Если карта успешно загрузилась, страница переходит в активное состояние)
-  .setView({lat: BASED_LOCATION_X, lng: BASED_LOCATION_Y}, MAP_ZOOM);
+  .on('load', activateForms)
+  .setView(DEFAULT_MAIN_MARKER_LOCATION, MAP_ZOOM)
 
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(map);
-
-// Задаёт кастомную главную метку
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-});
+  iconSize: MARKER_ICON_SIZE,
+  iconAnchor: MARKER_ICON_ANCHOR,
+})
 
 const similarPinIcon = L.icon({
   iconUrl: 'img/pin.svg',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-});
+  iconSize: MARKER_ICON_SIZE,
+  iconAnchor: MARKER_ICON_ANCHOR,
+})
 
 export const mainPinMarker = L.marker(
-  {
-    lat: BASED_LOCATION_X,
-    lng: BASED_LOCATION_Y,
-  },
+  DEFAULT_MAIN_MARKER_LOCATION,
   {
     draggable: true,
     icon: mainPinIcon,
   },
-);
+)
 
-mainPinMarker.addTo(map);
-
-// Отслеживает перемещения главной метки и выводит текущие координаты в форму поиска
-mainPinMarker.on('moveend', (evt) => {
-  const {lat, lng} = evt.target.getLatLng();
-  document.querySelector('#address').value = `${lat.toFixed(FRACTION_DIGIT)}, ${lng.toFixed(FRACTION_DIGIT)}`;
-});
-
-// Выводит на карту метки похожих объявлений
-export const renderSimilarPoints = (ads) => {
+export const renderSimilarPoints = ads => {
   const filteredAds = filterSimilarAds(ads)
-  map.eachLayer((layer) => {
+  map.eachLayer(layer => {
     if (layer instanceof L.Marker && layer !== mainPinMarker) {
       map.removeLayer(layer)
     }
   })
-  filteredAds.forEach((point) => {
-    const similarPinMarker = L.marker(point.location, {icon: similarPinIcon});
+  filteredAds.forEach(point => {
+    const similarPinMarker = L.marker(point.location, {icon: similarPinIcon})
+    similarPinMarker.addTo(map).bindPopup(getCardElement(point), {keepInView: true})
+  })
+}
 
-    similarPinMarker.addTo(map).bindPopup(
-      getCardElement(point),
-      {keepInView: true}, // Поможет уместить всю карточку на карте, сохраняя в зоне видимости и передвигая карту
-    );
-  });
+const onMainPinMarkerMoveEnd = (evt) => {
+  const {lat, lng} = evt.target.getLatLng()
+  document.querySelector('#address').value = `${lat.toFixed(FRACTION_DIGIT)}, ${lng.toFixed(FRACTION_DIGIT)}`
+}
+
+export const initMap = () => {
+  L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {attribution: '&copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'},
+  ).addTo(map)
+
+  mainPinMarker.addTo(map)
+  mainPinMarker.on('moveend', onMainPinMarkerMoveEnd)
 }

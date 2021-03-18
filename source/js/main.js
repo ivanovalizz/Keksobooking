@@ -1,20 +1,19 @@
 /* global _:readonly */
-import {setUserFormSubmit} from './form.js';
-import {fetchSimilarAds} from './api.js';
-import {renderSimilarPoints} from './map.js';
-import {onMapFiltersChange} from './similar-ads.js';
-import './photo.js';
+import {fetchSimilarAds} from './api.js'
+import {initMap, renderSimilarPoints} from './map.js'
+import {initForm} from './form.js'
+import {initAdsFilter} from './ads-filter.js'
+import './photo.js'
 
-const RERENDER_DELAY = 500;
+const RERENDER_DELAY = 500
+
+initForm()
+initMap()
 
 fetchSimilarAds(
-  (data) => {
+  data => {
     renderSimilarPoints(data)
-    onMapFiltersChange(_.debounce(
-      () => renderSimilarPoints(data), RERENDER_DELAY,
-    ))
+    initAdsFilter(_.debounce(() => renderSimilarPoints(data), RERENDER_DELAY))
   },
-  (errorMessage) => alert(errorMessage),
+  errorMessage => alert(errorMessage),
 )
-
-setUserFormSubmit();
